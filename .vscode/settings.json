@@ -1,0 +1,7 @@
+{
+  "files.exclude": {
+    "**/Oleg_Usov_w5_2": true,
+    "**/Oleg_Usov_w5_2.*": true,
+    "**/*.pyc": true
+  }
+}
