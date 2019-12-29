@@ -59,13 +59,13 @@ def file_path(file_path):
 
     return decorator
 
-#! Find digits 
+#! Find digits
 @file_path('dump.txt')
-def search_for_digits(source):
+def search_for_digits(source = None ):
     
     for number, line in enumerate(source):
         
-        regexp = re.match(r'\A[+-]?(?!0{2,6})\d{1,6}(\.\d*)?\Z', line)
+        regexp = re.match(r'\A[+-]?(?!0{2,6})\d{1,6}(\.\d*)?\Z', line) #TODO refactor with lamda
         
         add_number = number +1
         
