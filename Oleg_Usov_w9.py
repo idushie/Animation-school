@@ -59,9 +59,9 @@ def file_path(file_path):
 
     return decorator
 
-#! Find digits
+#! Find digits and filter it
 @file_path('dump.txt')
-def search_for_digits(source = None ):
+def search_for_digits(source = None):
     
     for number, line in enumerate(source):
         
