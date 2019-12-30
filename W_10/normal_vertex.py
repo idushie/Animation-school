@@ -10,7 +10,7 @@ sel_list = OpenMaya.MSelectionList()
 sel_list.add(selected_mesh)
 
 dp = OpenMaya.MDagPath()
-sel_list. (0, dp)
+sel_list.getDagPath(0, dp)
 
 it = OpenMaya.MItMeshVertex(dp)
 
