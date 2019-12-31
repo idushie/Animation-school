@@ -19,12 +19,12 @@ while not it.isDone():
     p2 = it.point(1, OpenMaya.MSpace.kWorld)
     c = it.center(OpenMaya.MSpace.kWorld)
 
-    #*Curve degre = 2 requires 3 points
+    #*Curve degree = 2 requires 3 points
     curve = cmds.curve( p=[(p1.x, p1.y, p1.z), 
                            (c.x, c.y, c.z),
                            (p2.x, p2.y, p2.z)], d = 2)
 
-    #*Normal vector of circle is difference between first point and second point
+    #*nr - normal vector of circle is difference between first point and second point
     circle = cmds.circle(nr= (p2.x-p1.x, p1.y-p2.y, p1.z-p2.z), 
                     c=(p1.x, p1.y, p1.z), r = 0.05 )
     
