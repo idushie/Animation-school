@@ -45,6 +45,7 @@ class SelectonSet(MayaQWidgetBaseMixin, QtWidgets.QDialog):
 
         self.create_set_btn = QtWidgets.QPushButton('Create set')
         self.create_set_btn.clicked.connect(self.show_window)
+        self.create_set_btn.setMaximumWidth(80)
         self.create_set_btn.setObjectName('CreateSetButton')
         self.create_set_btn.setMinimumWidth(80)
         self.buttonStyle = """
@@ -73,6 +74,16 @@ class SelectonSet(MayaQWidgetBaseMixin, QtWidgets.QDialog):
             """
         self.create_set_btn.setStyleSheet(self.buttonStyle)
         self.create_set_btn_layout.addWidget(self.create_set_btn)
+
+    def deleteSet(self, setPointer):
+
+        if self.select_set_btn_layout.count(): # if layout has any children
+            for i in range(self.select_set_btn_layout.count()):
+                item = self.select_set_btn_layout.itemAt(i)
+                widget = item.widget()
+                if widget:
+                    if str(widget) == setPointer:
+                        widget.deleteLater()
     
     def create_set(self):
         
@@ -95,6 +106,7 @@ class SelectonSet(MayaQWidgetBaseMixin, QtWidgets.QDialog):
         self.set = self.create_set()
 
         self.set_button = CustomWidget(object_set = self.set)
+        self.set_button.doRemove.connect(self.deleteSet)
         self.select_set_btn_layout.addWidget(self.set_button)
         self.set_button.setText(text)
         self.adjustSize()
@@ -191,6 +203,7 @@ class SelectColorName(MayaQWidgetBaseMixin, QtWidgets.QDialog):
 class CustomWidget(QtWidgets.QWidget):
 
     position_signal = QtCore.Signal(str)
+    doRemove = QtCore.Signal(str)
 
     def __init__(self, object_set = None):
 
@@ -225,8 +238,14 @@ class CustomWidget(QtWidgets.QWidget):
         
         self.remove_selection = self.popupMenu.addAction(QtWidgets.QAction('Remove selection', self,
                                                                             triggered=self.removeSelection))
+
+        self.delete_set = self.popupMenu.addAction(QtWidgets.QAction('Delete set', self,
+                                                                            triggered=self.delSelectionSet))                                                                    
     
-    
+    def delSelectionSet(self):
+
+        self.doRemove.emit(str(self))
+
     def addSelection(self):
         
         selection_set = cmds.ls (sl=1, l=1)
