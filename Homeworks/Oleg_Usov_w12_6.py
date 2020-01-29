@@ -1,7 +1,7 @@
 import maya.cmds as cmds
 from PySide2 import QtWidgets, QtGui, QtCore
 from maya.app.general.mayaMixin import MayaQWidgetBaseMixin
-from random import randint
+from random import randint, choice
 
 if cmds.window('MainWindow', q = 1, exists = 1):
     cmds.deleteUI('MainWindow')
@@ -40,22 +40,16 @@ class MainWindow(MayaQWidgetBaseMixin, QtWidgets.QDialog):
         self.btn_layout.addWidget(self.widget2)
 
     def resive_signal (self, widget_id):
-
-      
         
         if widget_id == str(self.widget1):
             
-            self.list_index = randint(0, len(self.COLOR)-1)
-            
-            self.random_color = self.COLOR[self.list_index]
+            self.random_color = choice(self.COLOR)
             
             self.widget2.change_color(self.random_color)
 
         elif widget_id == str(self.widget2):
-            
-            self.list_index = randint(0, len(self.COLOR)-1)
 
-            self.random_color = self.COLOR[self.list_index]
+            self.random_color = choice(self.COLOR)
             
             self.widget1.change_color(self.random_color)
     

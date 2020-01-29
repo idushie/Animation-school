@@ -1,20 +1,29 @@
-def left_join(phrases):
+import re
+
+def is_stressful(subj):
     """
-        Join strings and replace "right" to "left"
+        recognize stressful subject
     """
-    final = ''
-    for  word in phrases:
-        final += word.replace('right','left') + ','
-    return final[:-1]
+    letters_list = re.findall('[help]|[asap]', subj.lower())
+    if letters_list and len(set(letters_list)) >= 4:
+        return True
+
+    letters_list = re.findall('[help]|[asap]', subj.lower())
+    else:
+        return False
 
 if __name__ == '__main__':
-    print('Example:')
-    print(left_join(("left", "right", "left", "stop")))
-    print(left_join(("bright aright", "ok")))
     
-    #These "asserts" using only for self-checking and not necessary for auto-testing
-    assert left_join(("left", "right", "left", "stop")) == "left,left,left,stop", "All to left"
-    assert left_join(("bright aright", "ok")) == "bleft aleft,ok", "Bright Left"
-    assert left_join(("brightness wright",)) == "bleftness wleft", "One phrase"
-    assert left_join(("enough", "jokes")) == "enough,jokes", "Nothing to replace"
-    print("Coding complete? Click 'Check' to review your tests and earn cool rewards!")
+
+    #These "asserts" are only for self-checking and not necessarily for auto-testing
+    assert is_stressful("Hi") == False, "First"
+    assert is_stressful("I neeed HELP") == True, "Second"
+    assert is_stressful('H!E!L!P!') == True, 'Third'
+    assert is_stressful('HHHEEEEEEEEELLP') == True, 'Forth'
+    assert is_stressful('H-E-L-P') == True, 'Fith'
+    assert is_stressful('something is gona happen') == False, 'Sixth'
+    assert is_stressful('asap help') == True, 'Seventh'
+    assert is_stressful('h!e!l!p') == True, 'Seventh'
+    assert is_stressful('We need you A.S.A.P.!!') == True, 'Seventh'
+    
+    print('Done! Go Check it!')

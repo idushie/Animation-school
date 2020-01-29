@@ -1,7 +1,9 @@
+import re
+
 words = ["maya", "A_super_bus_driver_001", "potato", "B_sport_car_091", "laptop","I hate regexp","icecream", "tomato", "candy"]
 
-def find_word(words):
-    num = [0,1,2,3,4,5,6,7,8,9]
+def find_word(words:list):
+
     list_words = []
     for word in words:
         if word[0].isupper():
@@ -10,10 +12,10 @@ def find_word(words):
 
                 if '_' in word[-4]:
 
-                    if int(word[-3]) in num:
-                        if int(word[-2]) in num:
-                            if int(word[-1]) in num :
-                                list_words.append(word)
+                    if re.search(r'\d{3}', word):
+
+                        list_words.append(word)
+
     return list_words
 
 a = find_word(words)

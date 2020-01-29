@@ -350,16 +350,26 @@ class CustomWidget(QtWidgets.QWidget):
         self.set = object_set
         self.color = color
 
-        self.main_layout = QtWidgets.QVBoxLayout()
+        self.setMinimumSize(60,50)
+
+        self.main_layout = QtWidgets.QHBoxLayout()
         self.main_layout.setContentsMargins(1,1,1,1)
+        self.main_layout.setSpacing(0)
         
         self.setLayout(self.main_layout)
 
         self.label = QtWidgets.QLabel()
-        self.label.setObjectName('Label1')
+        self.label.setVisible(1)
         self.main_layout.addWidget(self.label)
         self.label.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
-        self.resize(self.label.sizeHint())
+        
+        self.name_change_field = QtWidgets.QLineEdit()
+        self.name_change_field.setVisible(0)
+        self.name_change_field.setMinimumWidth(60)
+        self.name_change_field.setMinimumHeight(50)
+        self.name_change_field.returnPressed.connect(self.rename_presed)
+        self.name_change_field.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
+        self.main_layout.addWidget(self.name_change_field)
 
         self.label.setStyleSheet('font: 14px; color: black;')
         self.widget_style_sheet = '''
@@ -381,6 +391,23 @@ class CustomWidget(QtWidgets.QWidget):
 
         self.delete_set = self.popupMenu.addAction(QtWidgets.QAction('Delete set', self,
                                                                             triggered=self.delSelectionSet))                                                                    
+    
+    def rename_set(self):
+
+        self.setStyleSheet(self.widget_style_sheet)
+        set_name = self.label.text()
+        self.name_change_field.setText(set_name)
+        self.label.setVisible(0)
+        self.name_change_field.setVisible(1)
+        
+    
+    def rename_presed(self):
+
+        set_name = self.name_change_field.text()
+        self.label.setText(set_name)
+        self.label.setVisible(1)
+        self.name_change_field.setVisible(0)
+        self.setStyleSheet(self.widget_style_sheet)
     
     def delSelectionSet(self):
 
@@ -426,6 +453,16 @@ class CustomWidget(QtWidgets.QWidget):
         self.text = text
         self.label.setText(self.text)
     
+    def mouseDoubleClickEvent(self, e):
+        
+        if e.button() == QtCore.Qt.LeftButton:
+            
+            self.rename_set()
+            self.setStyleSheet(self.widget_style_sheet)
+
+
+            super(CustomWidget, self).mouseDoubleClickEvent(e)
+
     def mouseReleaseEvent(self, e):
         
         if e.button() == QtCore.Qt.LeftButton:
@@ -472,32 +509,33 @@ myUI = SelectonSet()
 #myUI.move(300,500)
 myUI.show()
 
+def reveal_data():
 
-try: 
-    cmds.scriptNode( 'selection_setNode', executeBefore=True)
-except ValueError:    
-    pass
+    global collection_sets
 
-if collection_sets:
+    try: 
+        cmds.scriptNode( 'selection_setNode', executeBefore=True)
+    except ValueError:    
+        pass
 
-    list_length = len(collection_sets)
+    if collection_sets:
 
-    #* Info about widget consist of list set, color, text label thats why div by 3
-    number_of_widgets  = list_length / 3
+        list_length = len(collection_sets)
 
-    for widget in range(number_of_widgets):
+        #* Info about widget consist of list set, color, text label thats why div by 3
+        number_of_widgets  = list_length / 3
 
-        widget_set, widget_color , widget_text = collection_sets[:3]
+        for widget in range(number_of_widgets):
 
-        collection_sets = collection_sets[3:]
+            widget_set, widget_color , widget_text = collection_sets[:3]
 
-
-        myUI.COLLECTION_SET.append(widget_set)
-        myUI.COLLECTION_SET.append(widget_color)
-        myUI.COLLECTION_SET.append(widget_text)
-
-        myUI.create_set_button(sel_set = widget_set, color = widget_color, text = widget_text)
+            collection_sets = collection_sets[3:]
 
 
+            myUI.COLLECTION_SET.append(widget_set)
+            myUI.COLLECTION_SET.append(widget_color)
+            myUI.COLLECTION_SET.append(widget_text)
 
-myUI.COLLECTION_SET
+            myUI.create_set_button(sel_set = widget_set, color = widget_color, text = widget_text)
+
+#reveal_data()

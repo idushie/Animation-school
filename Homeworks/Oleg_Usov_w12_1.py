@@ -1,5 +1,5 @@
-#скрипт для задания 1
-def findMaxWord(*words):
+
+def findMaxWord(*words:str):
 
     result = None
 
