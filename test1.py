@@ -1,15 +1,31 @@
-def is_stressful(subj):
+def first_word(text: str) -> str:
     """
-        recognize stressful subject
+        returns the first word in a given text.
     """
-    if 'help' in subj.lower():
+    if '.' in text or ',' in text:
+        new_txt = ''
+        for index, letter in enumerate(text):
+            if letter == '.' or letter == ',':
+                new_txt = text[:index] + text[index:]
+        print (new_txt)
+        
+    res = text.split(' ')
 
-        return True
-    else:
-        return False
+    res = [value for value in res if value]
+
+    return res[0]
+
 
 if __name__ == '__main__':
-    #These "asserts" are only for self-checking and not necessarily for auto-testing
-    assert is_stressful("Hi") == False, "First"
-    assert is_stressful("I neeed HELP") == True, "Second"
-    print('Done! Go Check it!')
+    print("Example:")
+    print(first_word("Hello world"))
+    
+    # These "asserts" are used for self-checking and not for an auto-testing
+    assert first_word("Hello world") == "Hello"
+    assert first_word(" a word ") == "a"
+    assert first_word("don't touch it") == "don't"
+    assert first_word("greetings, friends") == "greetings"
+    assert first_word("... and so on ...") == "and"
+    assert first_word("hi") == "hi"
+    assert first_word("Hello.World") == "Hello"
+    print("Coding complete? Click 'Check' to earn cool rewards!")

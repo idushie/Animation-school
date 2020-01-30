@@ -5,6 +5,7 @@ from maya.OpenMayaUI import MQtUtil
 import maya.cmds as cmds
 from PySide2 import QtWidgets, QtGui, QtCore
 from PySide2.QtCore import QPoint
+import os
 
 if cmds.window('MainWindow', q = 1, exists = 1):
     cmds.deleteUI('MainWindow')
@@ -19,6 +20,13 @@ def maya_main_window():
     main_window_ptr = MQtUtil.mainWindow() # Python API 1.0
     return wrapInstance(long(main_window_ptr), QtWidgets.QWidget) 
 
+
+#thisFile = os.path.abspath(__file__)
+#thisDir = os.path.dirname(thisFile)
+
+#iconPath = os.path.join(thisDir, 'icons')
+
+collection_sets = []
 
 class SelectonSet(MayaQWidgetBaseMixin, QtWidgets.QWidget):
 
@@ -38,17 +46,19 @@ class SelectonSet(MayaQWidgetBaseMixin, QtWidgets.QWidget):
         self.main_layout.setContentsMargins(0,0,0,0)
         self.main_layout.setSpacing(0)
         self.setLayout(self.main_layout)
-       
+
+        self.container = QtWidgets.QWidget()
+        self.main_layout.addWidget(self.container)
+
+        self.container.setStyleSheet('background-color: balck;')
+
+       #! Select set btn
         self.select_set_btn_layout = QtWidgets.QHBoxLayout()
         self.select_set_btn_layout.setContentsMargins(5,5,5,5)
         self.select_set_btn_layout.setSpacing(2)
-        self.setAutoFillBackground(1)
-        color = 50
-        self.p = self.palette()
-        self.p.setColor(self.backgroundRole(), QtGui.QColor(color,color,color))
-        self.setPalette(self.p)
-
-        self.main_layout.addLayout(self.select_set_btn_layout)
+        self.container.setLayout(self.select_set_btn_layout)
+        
+        #! Create set btn
         self.create_set_btn_layout = QtWidgets.QVBoxLayout()
         self.create_set_btn_layout.setContentsMargins(5,5,5,5)
         self.main_layout.addLayout(self.create_set_btn_layout)
@@ -58,51 +68,49 @@ class SelectonSet(MayaQWidgetBaseMixin, QtWidgets.QWidget):
         self.close_btn_layout.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTop)
         self.main_layout.addLayout(self.close_btn_layout)
 
-        #! Close btn
-        self.close_btn = QtWidgets.QPushButton('X')
-        self.close_btn.setFixedSize(20,20)
-        self.close_btn_layout.addWidget(self.close_btn)
-        self.close_btn.clicked.connect(self.close)
-        
-        self.resize_btn_layout = QtWidgets.QVBoxLayout()
-        self.resize_btn_layout.setContentsMargins(5,5,5,5)
-        self.resize_btn_layout.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignBottom)
-        #self.main_layout.addLayout(self.resize_btn_layout)
-
-        #self.resize_btn = QtWidgets.QSizeGrip(myWidget)
-        #self.close_btn_layout.addWidget(self.resize_btn, alignment = QtCore.Qt.AlignBottom)
-        
-        self.create_set_btn = QtWidgets.QPushButton('Create set')
+    
+        self.create_set_btn = QtWidgets.QPushButton()
         self.create_set_btn.clicked.connect(self.show_window)
         self.create_set_btn.setMaximumWidth(80)
         self.create_set_btn.setMinimumWidth(80)
-        self.create_set_btn.setObjectName('CreateSetButton')
-        self.buttonStyle = """
-            QPushButton#CreateSetButton{
-                background-color: DarkViolet;
-                border-style: outset;
-                border-width: 2px;
-                border-radius: 10px;
-                border-color: beige;
-                font bold 14px;
-                padding: 6px;
-                color: black;
-                font-weight: 20px;
-                min-width: 80px;
-                min-height: 30px;
-                font-weight: 900;
 
- 
-            }
-            QPushButton#CreateSetButton:hover {
-                background-color: rgb(128,0,128);
-                color: white;
-                border-style: inset;
-            
-            }
-            """
-        self.create_set_btn.setStyleSheet(self.buttonStyle)
+        #self.create_set_btn.setObjectName('CreateSetButton')
+        #self.icon_path = os.path.join(iconPath, 'add_btn.png')
+        
+        #self.create_set_btn.setIcon(QtGui.QIcon(self.icon_path))
+        self.create_set_btn.setIconSize(QtCore.QSize(80,40))
         self.create_set_btn_layout.addWidget(self.create_set_btn)
+
+        self.reveal_data()
+ 
+    def reveal_data(self ):
+
+        global collection_sets
+
+        try: 
+            cmds.scriptNode( 'selection_setNode', executeBefore=True)
+        except ValueError:    
+            pass
+
+        if collection_sets:
+
+            list_length = len(collection_sets)
+
+            #* Info about widget consist of list set, color, text label thats why div by 3
+            number_of_widgets  = list_length / 3
+
+            for widget in range(number_of_widgets):
+
+                widget_set, widget_color , widget_text = collection_sets[:3]
+
+                collection_sets = collection_sets[3:]
+
+
+                self.COLLECTION_SET.append(widget_set)
+                self.COLLECTION_SET.append(widget_color)
+                self.COLLECTION_SET.append(widget_text)
+
+                self.create_set_button(sel_set = widget_set, color = widget_color, text = widget_text)
 
     def deleteSet(self, setPointer):
 
@@ -117,6 +125,9 @@ class SelectonSet(MayaQWidgetBaseMixin, QtWidgets.QWidget):
                         self.COLLECTION_SET.remove(widget.color)
                         self.COLLECTION_SET.remove(widget.text)
 
+                        save_info = 'collection_sets={}'.format(str(self.COLLECTION_SET))
+                        cmds.scriptNode( 'selection_setNode', e=True, bs=save_info, stp='python' )
+                        
                         widget.deleteLater()
     
     def create_set(self):
@@ -133,16 +144,7 @@ class SelectonSet(MayaQWidgetBaseMixin, QtWidgets.QWidget):
                     selection_list.append(i)
                 
         return selection_list
-    '''
-    def receive_signal_text(self, text=None):
 
-        self.text = text
-
-        self.COLLECTION_SET.append(text)
-
-        self.adjustSize()
-        self.oldPos = text
-    '''    
     @QtCore.Slot(str)
     def receive_signal_color(self, color_text_list = [],):
         
@@ -297,11 +299,11 @@ class SelectColorName(MayaQWidgetBaseMixin, QtWidgets.QDialog):
         self.radi_style_6 = 'QRadioButton{background-color:'+ 'PaleVioletRed' +'} QRadioButton:indicator { background-color:' + 'PaleVioletRed' + '}'
 
         self.radio_color_1.setStyleSheet(self.radi_style_1)
-        self.radio_color_2.setStyleSheet(self.radi_style_2) 
-        self.radio_color_3.setStyleSheet(self.radi_style_3) 
-        self.radio_color_4.setStyleSheet(self.radi_style_4) 
-        self.radio_color_5.setStyleSheet(self.radi_style_5) 
-        self.radio_color_6.setStyleSheet(self.radi_style_6) 
+        self.radio_color_2.setStyleSheet(self.radi_style_2)
+        self.radio_color_3.setStyleSheet(self.radi_style_3)
+        self.radio_color_4.setStyleSheet(self.radi_style_4)
+        self.radio_color_5.setStyleSheet(self.radi_style_5)
+        self.radio_color_6.setStyleSheet(self.radi_style_6)
 
     def send_signal(self):
 
@@ -350,7 +352,6 @@ class CustomWidget(QtWidgets.QWidget):
         self.set = object_set
         self.color = color
 
-        self.setMinimumSize(60,50)
 
         self.main_layout = QtWidgets.QHBoxLayout()
         self.main_layout.setContentsMargins(1,1,1,1)
@@ -467,7 +468,6 @@ class CustomWidget(QtWidgets.QWidget):
         
         if e.button() == QtCore.Qt.LeftButton:
             cmds.select(self.set)
-            print(self.text)
 
             self.setStyleSheet(self.widget_style_sheet)
         
@@ -501,41 +501,12 @@ class CustomWidget(QtWidgets.QWidget):
 
         self.position_signal.emit(pos)
 
-collection_sets = []
-
 
 myUI = SelectonSet()
 #myUI.adjustSize()
 #myUI.move(300,500)
 myUI.show()
 
-def reveal_data():
-
-    global collection_sets
-
-    try: 
-        cmds.scriptNode( 'selection_setNode', executeBefore=True)
-    except ValueError:    
-        pass
-
-    if collection_sets:
-
-        list_length = len(collection_sets)
-
-        #* Info about widget consist of list set, color, text label thats why div by 3
-        number_of_widgets  = list_length / 3
-
-        for widget in range(number_of_widgets):
-
-            widget_set, widget_color , widget_text = collection_sets[:3]
-
-            collection_sets = collection_sets[3:]
 
 
-            myUI.COLLECTION_SET.append(widget_set)
-            myUI.COLLECTION_SET.append(widget_color)
-            myUI.COLLECTION_SET.append(widget_text)
-
-            myUI.create_set_button(sel_set = widget_set, color = widget_color, text = widget_text)
-
-#reveal_data()
+myUI.COLLECTION_SET

@@ -99,8 +99,6 @@ class Button (QtWidgets.QLabel):
 
 
         self.setPixmap(self.icon.scaled(32,32))
-        
-
 
     def mousePressEvent(self, event):
         

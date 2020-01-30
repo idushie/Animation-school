@@ -55,6 +55,7 @@ class ObjectCreator(MayaQWidgetBaseMixin,QtWidgets.QDialog):
         self.radio_group = QtWidgets.QGroupBox()
         self.radio_group.setTitle('Objects')
         self.radio_group.setMinimumHeight(50)
+        self.radio_group.setStyleSheet('background-color: black;')
         
         self.radio_group_box_layout.addWidget(self.radio_group)
 
