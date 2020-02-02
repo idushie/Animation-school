@@ -6,6 +6,7 @@ import maya.cmds as cmds
 from PySide2 import QtWidgets, QtGui, QtCore
 from PySide2.QtCore import QPoint
 import os
+from button import Button
 
 if cmds.window('MainWindow', q = 1, exists = 1):
     cmds.deleteUI('MainWindow')
@@ -69,7 +70,7 @@ class SelectonSet(MayaQWidgetBaseMixin, QtWidgets.QWidget):
         self.main_layout.addLayout(self.close_btn_layout)
 
     
-        self.create_set_btn = QtWidgets.QPushButton()
+        self.create_set_btn = Button('add_btn')
         self.create_set_btn.clicked.connect(self.show_window)
         self.create_set_btn.setMaximumWidth(80)
         self.create_set_btn.setMinimumWidth(80)

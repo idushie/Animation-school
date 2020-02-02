@@ -1,31 +1,31 @@
-def first_word(text: str) -> str:
-    """
-        returns the first word in a given text.
-    """
-    if '.' in text or ',' in text:
-        new_txt = ''
-        for index, letter in enumerate(text):
-            if letter == '.' or letter == ',':
-                new_txt = text[:index] + text[index:]
-        print (new_txt)
-        
-    res = text.split(' ')
-
-    res = [value for value in res if value]
-
-    return res[0]
-
-
-if __name__ == '__main__':
-    print("Example:")
-    print(first_word("Hello world"))
+def checkio(words: str) -> bool:
+   
+   
+    words_list = words.split()
     
-    # These "asserts" are used for self-checking and not for an auto-testing
-    assert first_word("Hello world") == "Hello"
-    assert first_word(" a word ") == "a"
-    assert first_word("don't touch it") == "don't"
-    assert first_word("greetings, friends") == "greetings"
-    assert first_word("... and so on ...") == "and"
-    assert first_word("hi") == "hi"
-    assert first_word("Hello.World") == "Hello"
-    print("Coding complete? Click 'Check' to earn cool rewards!")
+
+    ls = []
+    for word in words_list:
+        
+        if word.isalpha():
+            
+            ls.append(1)
+        else:
+            ls.append(0)
+
+    if len(ls) >= 3 and  set(ls) == {1}:
+        return True
+    else:
+        return False
+
+#These "asserts" using only for self-checking and not necessary for auto-testing
+if __name__ == '__main__':
+    print('Example:')
+    print(checkio("Hello World hello"))
+    
+    assert checkio("Hello World hello") == True, "Hello"
+    assert checkio("He is 123 man") == False, "123 man"
+    assert checkio("1 2 3 4") == False, "Digits"
+    assert checkio("bla bla bla bla") == True, "Bla Bla"
+    assert checkio("Hi") == False, "Hi"
+    print("Coding complete? Click 'Check' to review your tests and earn cool rewards!")
