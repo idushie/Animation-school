@@ -83,8 +83,8 @@ class SelectonSet(MayaQWidgetBaseMixin, QtWidgets.QWidget):
         self.create_set_btn_layout.addWidget(self.create_set_btn)
 
         self.reveal_data()
- 
-    def reveal_data(self ):
+
+    def reveal_data(self):
 
         global collection_sets
 
@@ -170,7 +170,7 @@ class SelectonSet(MayaQWidgetBaseMixin, QtWidgets.QWidget):
         
 
         self.create_set_button(sel_set = self.set, color = self.color, text = self.text)
-        
+          
     def create_set_button(self, sel_set = [], color = '', text = ''):
 
         self.set_button = CustomWidget(object_set = sel_set, color=color)
@@ -197,6 +197,7 @@ class SelectonSet(MayaQWidgetBaseMixin, QtWidgets.QWidget):
             super(SelectonSet, self).mousePressEvent(event)
     
     def mouseMoveEvent(self, event):
+
         if event.buttons() == QtCore.Qt.MidButton:
 
             delta = QPoint (event.globalPos() - self.oldPos) # 
@@ -265,7 +266,7 @@ class SelectColorName(MayaQWidgetBaseMixin, QtWidgets.QDialog):
                 border: 1px inset beige
             }
             """
-        self.radio_group.setStyleSheet(self.radioStyle1) 
+        self.radio_group.setStyleSheet(self.radioStyle1)
 
         COLOR = ['Crimson', 'LimeGreen', 'Blue','DarkViolet','Orange','PaleVioletRed']
 
@@ -341,6 +342,7 @@ class SelectColorName(MayaQWidgetBaseMixin, QtWidgets.QDialog):
 
         
             self.close()
+
 class CustomWidget(QtWidgets.QWidget):
 
     position_signal = QtCore.Signal(str)
@@ -352,7 +354,6 @@ class CustomWidget(QtWidgets.QWidget):
 
         self.set = object_set
         self.color = color
-
 
         self.main_layout = QtWidgets.QHBoxLayout()
         self.main_layout.setContentsMargins(1,1,1,1)
@@ -468,8 +469,9 @@ class CustomWidget(QtWidgets.QWidget):
     def mouseReleaseEvent(self, e):
         
         if e.button() == QtCore.Qt.LeftButton:
-            cmds.select(self.set)
 
+            cmds.select(self.set)
+            
             self.setStyleSheet(self.widget_style_sheet)
         
             super(CustomWidget, self).mouseReleaseEvent(e)

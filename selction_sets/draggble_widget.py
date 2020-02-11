@@ -143,8 +143,6 @@ class Button (QtWidgets.QLabel):
 
         self.buttonSignal.emit(pos)
 
-
-
 myUi = Test()
 myUi.move(300,500)
 myUi.show()
